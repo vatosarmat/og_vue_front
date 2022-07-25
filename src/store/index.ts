@@ -23,6 +23,7 @@ export type Project = {
 
 export type State = {
   projects: Record<number, Project>
+  message: string
   count: number
 }
 
@@ -32,6 +33,7 @@ export default new Vuex.Store<State>({
   state: {
     count: 0,
     projects: {},
+    message: '',
   },
   mutations: {
     increment(state) {
@@ -72,8 +74,12 @@ export default new Vuex.Store<State>({
       const todos = state.projects[todo.project].todos
       state.projects[todo.project].todos = [...todos, todo]
     },
+    setMessage(state, message?: string) {
+      state.message = message ?? ''
+    },
   },
   getters: {
+    message: state => state.message,
     projects: state => state.projects,
     projectsList: state => Object.values(state.projects),
     projectIds: state => Object.values(state.projects).map(project => project.id),
@@ -106,7 +112,8 @@ export default new Vuex.Store<State>({
         commit('setTodoIsCompleted', todoUpdate)
         return true
       } catch (err: unknown) {
-        console.log(err as Error)
+        // console.log(err as Error)
+        commit('setMessage', 'patchTodo failed')
         return false
       }
     },
@@ -123,7 +130,8 @@ export default new Vuex.Store<State>({
         commit('addProject', project)
         return project
       } catch (err: unknown) {
-        console.log(err as Error)
+        // console.log(err as Error)
+        commit('setMessage', 'addProject failed')
         return false
       }
     },
@@ -140,7 +148,8 @@ export default new Vuex.Store<State>({
         commit('addTodo', todo)
         return todo
       } catch (err: unknown) {
-        console.log(err as Error)
+        // console.log(err as Error)
+        commit('setMessage', 'addTodo failed')
         return false
       }
     },

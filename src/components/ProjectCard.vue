@@ -1,6 +1,6 @@
 <template>
   <v-card class="project-card">
-    <v-card-title>{{ project.title }}</v-card-title>
+    <v-card-title class="project-card-title">{{ project.title }}</v-card-title>
     <v-card-text>
       <TodoItem v-for="todo of project.todos" :key="todo.id" v-bind="todo"></TodoItem>
     </v-card-text>
@@ -37,3 +37,9 @@ export default {
   // }
 }
 </script>
+
+<style>
+.project-card-title {
+  border-bottom: 1px solid #eee;
+}
+</style>

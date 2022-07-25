@@ -1,5 +1,5 @@
 <template>
-  <v-checkbox v-model="isCompletedValue" :label="text"></v-checkbox>
+  <v-checkbox dense v-model="isCompletedValue" :label="text"></v-checkbox>
 </template>
 
 <script lang="ts">
@@ -69,3 +69,13 @@ export default {
   // }
 }
 </script>
+
+<style>
+.v-input--checkbox .v-messages {
+  display: none;
+}
+
+.v-input--checkbox.v-input--is-label-active label {
+  text-decoration: line-through;
+}
+</style>
