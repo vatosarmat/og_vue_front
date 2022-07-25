@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="project-card">
     <v-card-title>{{ project.title }}</v-card-title>
     <v-card-text>
       <TodoItem v-for="todo of project.todos" :key="todo.id" v-bind="todo"></TodoItem>

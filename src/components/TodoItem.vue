@@ -53,9 +53,7 @@ export default {
           this.isFallback = true
           this.isCompletedValue = prevValue
         }
-        setTimeout(() => {
-          this.isAwaiting = false
-        }, 1000)
+        this.isAwaiting = false
       }
     },
   },

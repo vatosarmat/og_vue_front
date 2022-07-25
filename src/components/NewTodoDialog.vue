@@ -5,7 +5,7 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </template>
-    <v-form v-model="valid">
+    <v-form ref="form" v-model="valid">
       <v-card>
         <v-card-title>
           <span class="text-h5">New todo</span>
@@ -28,7 +28,7 @@
                   :items="[
                     { text: 'New project', value: 'NEW_PROJECT' },
                     { header: 'Created projects' },
-                    ...projects.map(p => ({
+                    ...Object.values(projects).map(p => ({
                       text: p.title,
                       value: p.id,
                     })),
@@ -59,7 +59,8 @@
 </template>
 
 <script lang="ts">
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import type { Project } from '@/store'
 export default {
   name: 'NewTodoDialog',
   data() {
@@ -79,14 +80,36 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ projects: 'projectsList' }),
+    ...mapGetters(['projects']),
   },
   methods: {
-    onOk() {
+    ...mapActions(['addProject', 'addTodo']),
+    async onOk() {
+      if (this.projectSelected) {
+        if (this.projectSelected === 'NEW_PROJECT') {
+          const newProject: Project = await this.addProject(this.projectTitle)
+          if (newProject) {
+            await this.addTodoResetDialog(newProject.id)
+          }
+        } else {
+          await this.addTodoResetDialog(this.projects[this.projectSelected].id)
+        }
+      }
+    },
+    async addTodoResetDialog(projectId: number) {
+      await this.addTodo({
+        project: projectId,
+        text: this.todoText,
+      })
       this.dialog = false
+      this.reset()
     },
     onCancel() {
       this.dialog = false
+    },
+    reset() {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(this.$refs.form as any).reset()
     },
   },
   // mounted() {

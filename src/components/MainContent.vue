@@ -1,12 +1,10 @@
 <template>
   <v-main>
-    <v-container fluid>
-      <v-row>
-        <v-col v-for="id in projectIds" :key="id">
-          <ProjectCard :id="id"></ProjectCard>
-        </v-col>
-      </v-row>
-    </v-container>
+    <ul class="project-list">
+      <li class="project-item" v-for="id in projectIds" :key="id">
+        <ProjectCard :id="id"></ProjectCard>
+      </li>
+    </ul>
   </v-main>
 </template>
 
@@ -24,3 +22,23 @@ export default {
   computed: { ...mapGetters(['projectIds']) },
 }
 </script>
+
+<style>
+.project-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 48px;
+}
+
+.project-item {
+  list-style-type: none;
+  min-width: 240px;
+}
+
+.project-list::after {
+  content: '';
+  flex: 1;
+}
+</style>

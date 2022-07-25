@@ -47,20 +47,34 @@ export default new Vuex.Store<State>({
       )
     },
     setTodoIsCompleted(state, todoUpdate: TodoUpdate) {
-      state.projects = {
-        ...state.projects,
-        [todoUpdate.project]: {
-          ...state.projects[todoUpdate.project],
-          todos: state.projects[todoUpdate.project].todos.map(todo =>
-            todoUpdate.id === todo.id
-              ? { ...todo, isCompleted: todoUpdate.isCompleted }
-              : todo
-          ),
-        },
+      // state.projects = {
+      //   ...state.projects,
+      //   [todoUpdate.project]: {
+      //     ...state.projects[todoUpdate.project],
+      //     todos: state.projects[todoUpdate.project].todos.map(todo =>
+      //       todoUpdate.id === todo.id
+      //         ? { ...todo, isCompleted: todoUpdate.isCompleted }
+      //         : todo
+      //     ),
+      //   },
+      // }
+      const todo = state.projects[todoUpdate.project].todos.find(
+        todo => todo.id === todoUpdate.id
+      )
+      if (todo) {
+        todo.isCompleted = todoUpdate.isCompleted
       }
+    },
+    addProject(state, project: Project) {
+      state.projects = { ...state.projects, [project.id]: project }
+    },
+    addTodo(state, todo: Todo) {
+      const todos = state.projects[todo.project].todos
+      state.projects[todo.project].todos = [...todos, todo]
     },
   },
   getters: {
+    projects: state => state.projects,
     projectsList: state => Object.values(state.projects),
     projectIds: state => Object.values(state.projects).map(project => project.id),
     projectById: state => (id: number) => state.projects[id],
@@ -71,8 +85,10 @@ export default new Vuex.Store<State>({
         const response = await fetch(`${apiUrl}/projects`, { headers })
         const data: Project[] = await response.json()
         commit('setProjects', data)
+        return true
       } catch (err: unknown) {
         console.log(err as Error)
+        return false
       }
     },
     async patchTodo({ commit }, todoUpdate: TodoUpdate) {
@@ -89,6 +105,40 @@ export default new Vuex.Store<State>({
 
         commit('setTodoIsCompleted', todoUpdate)
         return true
+      } catch (err: unknown) {
+        console.log(err as Error)
+        return false
+      }
+    },
+    async addProject({ commit }, title: string) {
+      try {
+        const body = { title }
+        const response = await fetch(`${apiUrl}/projects`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body),
+        })
+        const project: Project = await response.json()
+
+        commit('addProject', project)
+        return project
+      } catch (err: unknown) {
+        console.log(err as Error)
+        return false
+      }
+    },
+    async addTodo({ commit }, { text, project }: { text: string; project: number }) {
+      try {
+        const body = { project, text }
+        const response = await fetch(`${apiUrl}/todos`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body),
+        })
+        const todo: Todo = await response.json()
+
+        commit('addTodo', todo)
+        return todo
       } catch (err: unknown) {
         console.log(err as Error)
         return false
