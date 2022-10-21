@@ -49,17 +49,6 @@ export default new Vuex.Store<State>({
       )
     },
     setTodoIsCompleted(state, todoUpdate: TodoUpdate) {
-      // state.projects = {
-      //   ...state.projects,
-      //   [todoUpdate.project]: {
-      //     ...state.projects[todoUpdate.project],
-      //     todos: state.projects[todoUpdate.project].todos.map(todo =>
-      //       todoUpdate.id === todo.id
-      //         ? { ...todo, isCompleted: todoUpdate.isCompleted }
-      //         : todo
-      //     ),
-      //   },
-      // }
       const todo = state.projects[todoUpdate.project].todos.find(
         todo => todo.id === todoUpdate.id
       )
@@ -82,8 +71,13 @@ export default new Vuex.Store<State>({
     message: state => state.message,
     projects: state => state.projects,
     projectsList: state => Object.values(state.projects),
-    projectIds: state => Object.values(state.projects).map(project => project.id),
+    projectIds: state =>
+      Object.values(state.projects)
+        .map(project => project.id)
+        .sort(),
     projectById: state => (id: number) => state.projects[id],
+    projectTodos: state => (id: number) =>
+      state.projects[id].todos.sort((a, b) => b.id - a.id),
   },
   actions: {
     async fetchProjects({ commit }) {

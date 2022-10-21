@@ -2,7 +2,7 @@
   <v-card class="project-card">
     <v-card-title class="project-card-title">{{ project.title }}</v-card-title>
     <v-card-text>
-      <TodoItem v-for="todo of project.todos" :key="todo.id" v-bind="todo"></TodoItem>
+      <TodoItem v-for="todo of todos" :key="todo.id" v-bind="todo"></TodoItem>
     </v-card-text>
   </v-card>
 </template>
@@ -29,6 +29,9 @@ export default {
   computed: {
     project() {
       return this.$store.getters.projectById(this.id)
+    },
+    todos() {
+      return this.$store.getters.projectTodos(this.id)
     },
   },
 
